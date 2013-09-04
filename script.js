@@ -1,20 +1,31 @@
 Inventory= function (items) {
 	this.items= items || [];
 
-	this.add = function (item) {  //will push items into array
+	this.pickUp = function (item) {  //will push items into array
 		this.items.push(item)
   	};
 
   	this.use = function (items, itemIndex) {
-  		this.items[itemIndex].charges --;
-  		console.log('YA USED IT');
-  		if (Hero.hp < 500) {
-  		Hero.hp += 10;
-  		}
-  		else {
-  			console.log('health is full!')
-  		}
-  	}
+  	 if (this.items[itemIndex].charges < 0) {
+      console.log('this potion is empty!')
+     }
+     else { 
+        this.items[itemIndex].charges --;
+  		  console.log('YA USED IT');
+  		  if (Hero.hp < 500) {
+  		  Hero.hp += 10;
+  		  }
+  		  else {
+  		  	console.log('health is full!')
+  		  }
+      }  
+  	};
+
+ this.drop = function (items, itemIndex) {
+      this.items[itemIndex].charges = 0;
+      this.items[itemIndex].condition = "broken";
+      return("You broke the " + this.items[itemIndex].size + " potion. Great Job!")
+    }
 
   	this.refill = function (items, itemIndex) {
   		if (this.items[itemIndex].charges < this.items[itemIndex].capacity) {
@@ -22,41 +33,78 @@ Inventory= function (items) {
   		console.log('YA FILLED IT')
   		}
   		else {
-  			function display_alert() {
-  			alert("You cannot carry anymore!");
-  			}
   			console.log('You cannot carry anymore!')
   		}	
   	}
+
 };
 
 var healthPotion= new Inventory()
 
-healthPotion.add ({slot:1, size:"large", capacity:25, charges:20})
-healthPotion.add ({slot:2, size:"medium", capacity:15, charges:10})
-healthPotion.add ({slot:3, size:"small", capacity:7, charges:5})
+healthPotion.pickUp ({size:"large", capacity:25, charges:20})
+healthPotion.pickUp ({size:"medium", capacity:15, charges:10})
+healthPotion.pickUp ({size:"small", capacity:7, charges:5})
 
 
-player = function(hp, attack){
+player = function(hp, attack, name){
 	this.hp = hp;
 	this.attack = attack;
+  this.name = name; 
 
-	this.jab = function () {
-		if (undead.hp > 0) {
-			undead.hp --
+	this.jab = function (target) {
+		if (target.hp > 0) {
+			target.hp -= this.attack;
+      this.hp -= target.def
 		}
-		
+    if (target.hp < 1) {
+      console.log('you have slain this monster!')
+    }
+    return ("your target has " + target.hp + "hp and Hero has " + Hero.hp +'hp');
 	};
+
+  this.run= function() {
+    randomnumber = Math.floor(Math.random(30)*30);
+    this.hp -= randomnumber;
+    return ('you ran away, but tripped on a pebble and lost ' + randomnumber+ 'hp!')
+  }
+
+  this.meditate= function() {
+    randomattack = Math.floor(Math.random(30)*30);
+     this.attack += randomattack;
+     this.hp -= randomattack;
+    return ('you have meditated on the battlefiend and gained ' + randomattack +
+      "attack power, but you have neglected your physical self and have lost "
+       + randomattack + "hp")
+  }
+
 };
 
-var Hero = new player(500,50)
-var Minion1 = new player(100, 20)
-var Minion2 = new player(75, 30)
+var Hero = new player(500,50, "Hero")
 
-undead = function(hp, def){
+
+undead = function(hp, def, attack){
 	this.hp = hp;
 	this.def = def;
+  this.attack = attack;
+
+  this.miniboss= function(hp, def, attack) {
+    this.hp += 200;
+    this.def += 40;
+    this.attack += 80; 
+  }
+
+  this.hostile = function() {
+    this.condition = "hostile"
+    Hero.hp -= this.attack;
+    console.log('the undead creature lunges out of darkness and hits you for ' + this.attack + 'hp')
+  }
+
 
 };
 
-CryptLord = new undead(200,50)
+var CryptLord = new undead(200,50,60)
+
+
+
+
+
