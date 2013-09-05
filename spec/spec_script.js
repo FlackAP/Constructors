@@ -74,8 +74,74 @@ describe ('player', function(){
       expect(punchingBag.hp).toBe(0);
     });
 
-  })
+    it ('should reduce hp of player based on defense value of target', function() {
+      Hero2= new player(500, 999);
+      punchingBag = new undead(500, 40, 90);
+      Hero2.jab(punchingBag);
+      expect(Hero2.hp).toBe(460);
+    });
+  });
+
+  describe('kick', function() {
+
+    it('should reduce players health by targets attack value plus half of the amount of extra damage inflicted', function() {
+       HeroTest= new player(500,60);
+       punchingBag = new undead(300,0,40);
+       HeroTest.kick(punchingBag);
+       expect(Hero2.hp - (.5)*randomkick).toEqual(500 - (punchingBag.attack + (.5)*randomkick));
+    });
+
+    it('should reduce targets health by players attack value plus value of randomkick', function() {
+      HeroTest= new player(500,60);
+      punchingBag = new undead(300,0,0);
+      HeroTest.kick(punchingBag);
+      expect(punchingBag.hp).toBe(300 - (60 + randomkick));
+    });
+
+  }); 
+});
+
+describe('undead', function () {
+
+  it('should use attack value to subtract hp from target when hostile', function () {
+    Hero= new player(400,20);
+    CryptLord= new undead(30,40,100);
+    CryptLord.hostile(Hero);
+    expect(Hero.hp).toBe(300)
+  });
+
+  describe('miniboss', function(){
+    it('should increase its hp, attack, and defense when changing to a miniboss', function (){
+      CryptLord= new undead(30,40,100);
+      CryptLord.miniboss();
+      expect(CryptLord.hp).toBe(230);
+    });
+
+    it('should change its type to miniboss', function (){
+      CryptLord= new undead(30,40,100);
+      CryptLord.miniboss();
+      expect(CryptLord.type).toBe("miniboss");
+    });
+  });
+    
 
 
+  describe('selfDestruct', function() {
+
+    it ('should damage the target', function () {
+      Hero= new player(400,20);
+      CryptLord= new undead(30,20);
+      CryptLord.selfDestruct(Hero);
+      expect(Hero.hp).toBe(250);
+    });
+
+    it ('should reduce own hp to zero', function () {
+      Hero= new player(400,20);
+      CryptLord= new undead(30,20);
+      CryptLord.selfDestruct(Hero);
+      expect(CryptLord.hp).toBe(0);
+    });
+
+  });  
 });
 

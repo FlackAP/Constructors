@@ -59,8 +59,22 @@ player = function(hp, attack, name){
     if (target.hp < 1) {
       console.log('you have slain this monster!')
     }
-    return ("your target has " + target.hp + "hp and Hero has " + Hero.hp +'hp');
+    return ("your target has " + target.hp + "hp and Hero has " + Hero.hp +'hp.');
 	};
+
+  this.kick = function (target) {
+    randomkick = Math.floor(Math.random(50)*50);
+    if (target.hp > 0) {
+      target.hp -= this.attack;
+      target.hp -= randomkick;
+      this.hp -= target.attack;
+      this.hp -= (.5)*randomkick;
+    }
+    if (target.hp < 1) {
+      console.log('you have slain this monster!')
+    }
+    return ('your kick landed for an extra ' + randomkick + ' points. Your target now has' + target.hp + 'hp and Hero has ' + Hero.hp +'hp.')
+  };
 
   this.run= function() {
     randomnumber = Math.floor(Math.random(30)*30);
@@ -91,18 +105,25 @@ undead = function(hp, def, attack){
     this.hp += 200;
     this.def += 40;
     this.attack += 80; 
+    this.type= "miniboss"
   }
 
-  this.hostile = function() {
+  this.hostile = function(target) {
     this.condition = "hostile"
-    Hero.hp -= this.attack;
-    console.log('the undead creature lunges out of darkness and hits you for ' + this.attack + 'hp')
+    target.hp -= this.attack;
+    console.log('The undead creature lunges out of darkness and hits you for ' + this.attack + 'hp')
   }
 
+  this.selfDestruct = function(target) {
+    this.hp = 0;
+    target.hp -= 150;
+    console.log ('The undead creature explodes and damages you for 150hp!') 
+  }
 
 };
 
 var CryptLord = new undead(200,50,60)
+
 
 
 
